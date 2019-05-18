@@ -1,0 +1,47 @@
+﻿<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header col-md-2">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a style="background-color:#827ffe;margin-left:20px;color:white;" class="logo navbar-brand" href="#objective">FinTec</a>
+        </div>
+        <div class="collapse navbar-collapse col-md-8" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav hov">
+                <li class="obj"><a href="#dashboard">Dashboard</a></li>
+                <li class="exp active"><a href="#product">Buy Product</a></li>
+            </ul>
+        </div>
+        <div class="col-md-2" style="float:right;">
+            <span style="padding-right:15px;">Kumaran</span>
+            <i class="fa fa-sign-out" style="font-size:24px;margin-top: 12px;cursor:pointer;" ng-click="logout()"></i>
+        </div>
+    </div>
+</nav>
+    
+<div style="margin-top:100px">
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="search" ng-model="itemSearch">
+    </div>
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Retailer name</th>
+                <th>price</th>
+                <th>feedback</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="item in productData.retailsList | filter:itemSearch">
+                <td>{{item.item}}</td>
+                <td>{{item.retailName}}</td>
+                <td>{{item.price}}</td>
+                <td>{{item.feedback}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
