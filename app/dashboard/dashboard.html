@@ -7,22 +7,24 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a style="background-color:#827ffe;margin-left:20px;color:white;" class="logo navbar-brand" href="#objective">FinTec</a>
+            <a style="margin-left:20px;color:white;padding: 0px;" class="logo navbar-brand" href="#objective">
+                <img src="res/images/logo.png" style="width: 116px;height: 44px;margin-top: 5px;">
+            </a>
         </div>
         <div class="collapse navbar-collapse col-md-8" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav hov">
                 <li class="obj active"><a href="#dashboard">Dashboard</a></li>
-                <li class="exp"><a href="#product">Buy Product</a></li>
+                <!-- <li class="exp"><a href="#product">Buy Product</a></li>-->
             </ul>
         </div>
-        <div class="col-md-2" style="float:right;">
-            <span style="padding-right:15px;">Kumaran</span>
+        <div class="col-md-2" style="float:right;padding: 5px;">
+            <span style="padding-right:15px;">Welcome {{loginData.firstName}}</span>
             <i class="fa fa-sign-out" style="font-size:24px;margin-top: 12px;cursor:pointer;" ng-click="logout()"></i>
         </div>
     </div>
 </nav>
 
-<div class="row" style="margin-top: 70px;">
+<div class="row" style="margin-top: 100px;">
     <div class="col-md-6">
         <div class="form-group">
             <label for="sel1">Account Number:</label>
@@ -40,16 +42,132 @@
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="card col-sm-3" style="padding: 15px;">
+        <img style="width:100%" class="card-img-top img-responsive" src="res/images/grocery.jpg" alt="Card image cap" ng-click="showDetails(selected.month.grocery, 'Grocery')">
+    </div>
+    <div class="card col-sm-3" style="padding: 15px;">
+        <img style="width:100%" class="card-img-top img-responsive" src="res/images/book.png" alt="Card image cap" ng-click="showDetails(selected.month.books, 'Books')">
+    </div>
+    <div class="card col-sm-3" style="padding: 15px;">
+        <img style="width:100%" class="card-img-top img-responsive" src="res/images/entertainment.jpg" alt="Card image cap" ng-click="showDetails(selected.month.entertainment, 'Entertainment')">
+    </div>
+    <div class="card col-sm-3" style="padding: 15px;">
+        <img style="width:100%" class="card-img-top img-responsive" src="res/images/medical.png" alt="Card image cap" ng-click="showDetails(selected.month.medical, 'Medical')">
+    </div>
+    <div class="card col-sm-3" style="padding: 15px;">
+        <img style="width:100%" class="card-img-top img-responsive" src="res/images/sports.jpg" alt="Card image cap" ng-click="showDetails(selected.month.sports, 'Sports')">
+    </div>
+    <div class="card col-sm-3" style="padding: 15px;">
+        <img style="width:100%" class="card-img-top img-responsive" src="res/images/transport.jpg" alt="Card image cap" ng-click="showDetails(selected.month.transport, 'Transport')">
+    </div>
+</div>
 
-<div id="myCarousel" class="carousel slide" data-ride="carousel" style="margin-top: 49px;">
+<div class="modal fade" id="myModal1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Products</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success" id="alertMessage" style="display:none;">
+                        <strong>Success!</strong> Product issued successfully
+                    </div>
+                    <div class="alert alert-warning" id="alertWarningMessage" style="display:none;">
+                            <strong>Warning!</strong> Loan not granted, please use other type of payments
+                        </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="search" ng-model="itemSearch">
+                    </div>
+                    <table ng-show="itemSearch" class="table table-responsive">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Retailer Name</th>
+                                <th>Price</th>
+                                <th>Feedback</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in retailerData.retailsList | filter:itemSearch">
+                                <td>
+                                    <i class="fa fa-tshirt" style='font-size:48px;color:red'></i>
+                                    <span>{{item.item}}</span>
+                                </td>
+                                <td>{{item.retailName}}</td>
+                                <td>{{item.price}}{{item.price ? ' eur' : ''}}</td>
+                                <td style="font-size:20px;">
+                                    <i ng-style="{'color': item.feedback === 'OK' ? 'green' : 'red'}" class="fa {{item.feedback === 'OK'? 'fa-thumbs-up' : 'fa-thumbs-down'}}"></i>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-xs btn-success" ng-click="item.loanCheck === 'true' ? item.buyClicked = true : availLoan(item, 'noLoanCheck')" ng-disabled="item.buyOption === 'NOK'">Buy</button>
+                                    <a href="javascript:void(0)" ng-show="item.buyClicked" ng-click="availLoan(item)">avail loan</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <a></a>
+                </div>
+            </div>
+        </div>
+      </div>
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">{{selectedItem.name}}</h4>
+                <button style="margin-top: 5px;" type="button" class="btn btn-success" ng-click="buyProduct()">Buy Product</button>
+            </div>
+            <div class="modal-body">
+                <div ng-repeat="day in selectedItem.data.details.days track by $index">
+                        <h4 style="padding-bottom: 10px;">{{day.day.date}}</h4>
+                        <table class="table table-responsive">
+                            <thead>
+                                <tr>
+                                    <th>name</th>
+                                    <th>amount</th>
+                                    <th>feedback</th>
+                                    <th>Best Deal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in day.day.items">
+                                    <td>{{item.name}}</td>
+                                    <td>{{item.amount}}{{item.amount ? ' eur' : ''}}</td>
+                                    <td style="font-size:20px;">
+                                        <i data-toggle="tooltip" ng-style="{'color': item.feedback === 'OK' ? 'green' : 'red'}" data-placement="bottom" ng-title="{{item.improvements.retailer}}" class="fa {{item.feedback === 'OK'? 'fa-thumbs-up' : 'fa-thumbs-down'}}"></i>
+                                    </td>
+                                    <td>{{item.improvements.retailer + " - " + item.improvements.amount}}{{item.improvements.amount ? ' eur' : ''}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+  </div>
+
+<!--<div id="myCarousel" class="carousel slide" data-ride="carousel" style="margin-top: 15px;">
     <ol class="carousel-indicators">
         <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
         <li data-target="#myCarousel" data-slide-to="1"></li>
         <li data-target="#myCarousel" data-slide-to="2"></li>
+        <li data-target="#myCarousel" data-slide-to="3"></li>
+        <li data-target="#myCarousel" data-slide-to="4"></li>
     </ol>
     <div class="carousel-inner">
         <div class="item active">
-            <img src="res/images/img_snow_wide.jpg" alt="Los Angeles" style="width:100%;">
+            <img src="res/images/grocery.jpg" alt="Los Angeles" style="width:100%;">
             <div class="carousel-caption" style="padding-bottom:90px;">
                 <h1>Grocery</h1>
                 <h4 style="margin-top: 25px;">{{selected.month.grocery.amountSpent}} Eur</h4>
@@ -57,17 +175,43 @@
             </div>
         </div>
         <div class="item">
-            <img src="res/images/img_nature_wide.jpg" alt="Chicago" style="width:100%;">
+            <img src="res/images/book.png" alt="Chicago" style="width:100%;">
             <div class="carousel-caption">
-                <h3>New York</h3>
-                <p>We love the Big Apple!</p>
+                <h1>Books</h1>
+                <h4 style="margin-top: 25px;">{{selected.month.books.amountSpent}} Eur</h4>
+                <button style="margin-top: 10px;" type="button" class="btn btn-warning" ng-click="">View Details</button>
             </div>
         </div>
         <div class="item">
-            <img src="res/images/img_mountains_wide.jpg" alt="New york" style="width:100%;">
+            <img src="res/images/entertainment.jpg" alt="New york" style="width:100%;">
             <div class="carousel-caption">
-                <h3>New York</h3>
-                <p>We love the Big Apple!</p>
+                <h1>Entertainment</h1>
+                <h4 style="margin-top: 25px;">{{selected.month.entertainment.amountSpent}} Eur</h4>
+                <button style="margin-top: 10px;" type="button" class="btn btn-warning" ng-click="">View Details</button>
+            </div>
+        </div>
+        <div class="item">
+            <img src="res/images/medical.jpg" alt="New york" style="width:100%;">
+            <div class="carousel-caption">
+                <h1>Medical</h1>
+                <h4 style="margin-top: 25px;">{{selected.month.medical.amountSpent}} Eur</h4>
+                <button style="margin-top: 10px;" type="button" class="btn btn-warning" ng-click="">View Details</button>
+            </div>
+        </div>
+        <div class="item">
+            <img src="res/images/transport.jpg" alt="New york" style="width:100%;">
+            <div class="carousel-caption">
+                <h1>Transport</h1>
+                <h4 style="margin-top: 25px;">{{selected.month.transport.amountSpent}} Eur</h4>
+                <button style="margin-top: 10px;" type="button" class="btn btn-warning" ng-click="">View Details</button>
+            </div>
+        </div>
+        <div class="item">
+            <img src="res/images/sports.jpg" alt="New york" style="width:100%;">
+            <div class="carousel-caption">
+                <h1>Sports</h1>
+                <h4 style="margin-top: 25px;">{{selected.month.sports.amountSpent}} Eur</h4>
+                <button style="margin-top: 10px;" type="button" class="btn btn-warning" ng-click="">View Details</button>
             </div>
         </div>
     </div>
@@ -79,9 +223,9 @@
         <span class="glyphicon glyphicon-chevron-right"></span>
         <span class="sr-only">Next</span>
     </a>
-</div>
+</div>-->
 
-<div ng-repeat="day in selected.month.grocery.details.days track by $index">
+<!-- <div ng-repeat="day in selected.month.grocery.details.days track by $index">
     <h3>{{day.day.date}}</h3>
     <table class="table table-responsive">
         <thead>
@@ -99,4 +243,4 @@
             </tr>
         </tbody>
     </table>
-</div>
+</div> -->
